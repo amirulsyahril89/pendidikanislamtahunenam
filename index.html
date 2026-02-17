@@ -281,14 +281,14 @@
                 ]
             },
             'hadith': {
-    title: "Hadith",
-    desc: "Membentuk peribadi mulia melalui sabda Nabi",
-    icon: "ph-quotes",
-    color: "emerald",
-    units: [
-        { id: 1, title: "Unit 1: Hindari Rasuah", desc: "Masyarakat Maju Tanpa Rasuah" }
-    ]
-},
+                title: "Hadith",
+                desc: "Membentuk peribadi mulia melalui sabda Nabi",
+                icon: "ph-quotes",
+                color: "emerald",
+                units: [
+                    { id: 1, title: "Unit 1: Hindari Rasuah", desc: "Masyarakat Maju Tanpa Rasuah" }
+                ]
+            },
             'jawi': {
                 title: "Jawi",
                 desc: "Memartabatkan warisan seni tulisan",
@@ -375,82 +375,60 @@
 
             // Populate Units
             unitsContainer.innerHTML = '';
-data.units.forEach((unit, index) => {
-    const delay = index * 100;
-    
-    // Create Card HTML
-    const card = document.createElement('div');
-    
-    // LOGIK BARU: Tentukan status (Locked vs Unlocked)
-    // Di sini kita tetapkan Unit 1 Hadith sebagai 'unlocked'
-    let isUnlocked = (key === 'hadith' && unit.id === 1); 
-
-    if (isUnlocked) {
-        // STYLE UNTUK UNIT YANG DIBUKA (AKTIF)
-        card.className = `bg-white border-2 border-${data.color}-200 rounded-2xl p-5 flex items-center justify-between group cursor-pointer hover:bg-${data.color}-50 hover:shadow-lg transition-all`;
-        card.onclick = () => window.location.href = 'unit_hadith_rasuah.html'; // LINK KE FAIL BARU
-        
-        card.innerHTML = `
-            <div class="flex items-center gap-4">
-                <div class="bg-${data.color}-100 text-${data.color}-600 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span class="font-bold text-lg">${unit.id}</span>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-800 text-lg">${unit.title}</h4>
-                    <p class="text-sm text-slate-500">${unit.desc}</p>
-                </div>
-            </div>
-            <div class="bg-${data.color}-100 p-2 rounded-lg text-${data.color}-600">
-                <i class="ph-bold ph-play text-xl"></i>
-            </div>
-        `;
-    } else {
-        // STYLE ASAL UNTUK UNIT YANG DIKUNCI
-        card.className = 'unit-locked rounded-2xl p-5 flex items-center justify-between group';
-        card.onclick = () => showToast(unit.title);
-
-        card.innerHTML = `
-            <div class="flex items-center gap-4">
-                <div class="bg-slate-100 text-slate-400 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span class="font-bold text-lg">${unit.id}</span>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-700 text-lg">${unit.title}</h4>
-                    <p class="text-sm text-slate-500">${unit.desc}</p>
-                </div>
-            </div>
-            <div class="bg-slate-50 p-2 rounded-lg text-slate-300">
-                <i class="ph-fill ph-lock-key text-xl"></i>
-            </div>
-        `;
-    }
-
-    card.style.animation = `fadeIn 0.5s ease-out ${delay}ms forwards`;
-    card.style.opacity = '0';
-    unitsContainer.appendChild(card);
-});
+            
+            // LOGIK YANG DIBETULKAN (Hanya satu loop sahaja)
+            data.units.forEach((unit, index) => {
+                const delay = index * 100;
                 
                 // Create Card HTML
                 const card = document.createElement('div');
-                card.className = 'unit-locked rounded-2xl p-5 flex items-center justify-between group';
-                card.style.animation = `fadeIn 0.5s ease-out ${delay}ms forwards`;
-                card.style.opacity = '0'; // Start hidden for animation
-                card.onclick = () => showToast(unit.title);
+                
+                // LOGIK BARU: Tentukan status (Locked vs Unlocked)
+                // Di sini kita tetapkan Unit 1 Hadith sebagai 'unlocked'
+                let isUnlocked = (key === 'hadith' && unit.id === 1); 
 
-                card.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="bg-slate-100 text-slate-400 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <span class="font-bold text-lg">${unit.id}</span>
+                if (isUnlocked) {
+                    // STYLE UNTUK UNIT YANG DIBUKA (AKTIF)
+                    card.className = `bg-white border-2 border-${data.color}-200 rounded-2xl p-5 flex items-center justify-between group cursor-pointer hover:bg-${data.color}-50 hover:shadow-lg transition-all`;
+                    card.onclick = () => window.location.href = 'unit_hadith_rasuah.html'; // LINK KE FAIL BARU
+                    
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="bg-${data.color}-100 text-${data.color}-600 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-lg">${unit.id}</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">${unit.title}</h4>
+                                <p class="text-sm text-slate-500">${unit.desc}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-slate-700 text-lg">${unit.title}</h4>
-                            <p class="text-sm text-slate-500">${unit.desc}</p>
+                        <div class="bg-${data.color}-100 p-2 rounded-lg text-${data.color}-600">
+                            <i class="ph-bold ph-play text-xl"></i>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 p-2 rounded-lg text-slate-300">
-                        <i class="ph-fill ph-lock-key text-xl"></i>
-                    </div>
-                `;
+                    `;
+                } else {
+                    // STYLE ASAL UNTUK UNIT YANG DIKUNCI
+                    card.className = 'unit-locked rounded-2xl p-5 flex items-center justify-between group';
+                    card.onclick = () => showToast(unit.title);
+
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-100 text-slate-400 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-lg">${unit.id}</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-700 text-lg">${unit.title}</h4>
+                                <p class="text-sm text-slate-500">${unit.desc}</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded-lg text-slate-300">
+                            <i class="ph-fill ph-lock-key text-xl"></i>
+                        </div>
+                    `;
+                }
+
+                card.style.animation = `fadeIn 0.5s ease-out ${delay}ms forwards`;
+                card.style.opacity = '0';
                 unitsContainer.appendChild(card);
             });
 
@@ -490,4 +468,5 @@ data.units.forEach((unit, index) => {
     </script>
 </body>
 </html>
+
 
