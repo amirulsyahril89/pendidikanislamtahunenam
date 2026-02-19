@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidang Sirah - Senarai Unit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #FFF1F2; } /* Rose-50 Background */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .unit-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-700 selection:bg-rose-200">
+
+    <!-- Header -->
+    <header class="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b-2 border-rose-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='index.html'">
+                <img src="https://drive.google.com/uc?export=view&id=1Rh-4Lbm-6Md9cMYwM_gtPIF8tChvfdXY" alt="Logo" class="w-16 h-16 object-contain">
+                <div>
+                    <h1 class="font-extrabold text-2xl leading-tight text-slate-800">Pendidikan Islam <span class="text-rose-600">Tahun 6</span></h1>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">E-Pembelajaran</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 bg-rose-50 px-4 py-2 rounded-full border border-rose-100">
+                <i class="ph-fill ph-scroll text-rose-600 text-xl"></i>
+                <span class="text-sm font-bold text-rose-800">Bidang Sirah</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-10 w-full fade-in">
+        
+        <!-- Butang Kembali ke Utama -->
+        <button onclick="window.location.href='index.html'" class="mb-8 flex items-center gap-2 text-slate-500 hover:text-rose-600 font-bold transition-colors group">
+            <div class="bg-white p-2 rounded-full shadow-sm border border-slate-200 group-hover:border-rose-200 group-hover:bg-rose-50 transition-all">
+                <i class="ph-bold ph-house"></i>
+            </div>
+            Kembali ke Menu Utama
+        </button>
+
+        <!-- Header Bidang -->
+        <div class="flex flex-col md:flex-row items-center gap-6 mb-12 bg-white p-8 rounded-3xl shadow-sm border border-rose-100">
+            <div class="w-24 h-24 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-5xl shadow-md">
+                <i class="ph-duotone ph-scroll"></i>
+            </div>
+            <div class="text-center md:text-left">
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-50 text-rose-600 mb-2 inline-block">Bidang Pembelajaran</span>
+                <h2 class="text-4xl font-extrabold text-slate-800 mb-2">Sirah</h2>
+                <p class="text-slate-500 font-medium text-lg">Menelusuri sejarah perjuangan Rasulullah SAW.</p>
+            </div>
+        </div>
+
+        <!-- Senarai Unit -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            
+            <!-- Unit 1: Negara Madinah (AKTIF) -->
+            <div onclick="window.location.href='unit_sirah.html'" class="unit-card bg-white border-2 border-rose-200 rounded-2xl p-6 flex items-center justify-between cursor-pointer transition-all group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-100 text-rose-600 w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-2xl shadow-sm">1</div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-xl group-hover:text-rose-700 transition-colors">Negara Madinah</h4>
+                        <p class="text-sm text-slate-500 font-medium">Pembentukan Negara Islam</p>
+                    </div>
+                </div>
+                <div class="bg-rose-50 p-3 rounded-full text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-all">
+                    <i class="ph-bold ph-play text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Unit 2: Tasamuh (Locked) -->
+            <div class="bg-white/60 border-2 border-slate-100 rounded-2xl p-6 flex items-center justify-between cursor-not-allowed opacity-70">
+                <div class="flex items-center gap-5">
+                    <div class="bg-slate-100 text-slate-400 w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-2xl">2</div>
+                    <div>
+                        <h4 class="font-bold text-slate-600 text-xl">Tasamuh</h4>
+                        <p class="text-sm text-slate-400">Toleransi Rasulullah SAW</p>
+                    </div>
+                </div>
+                <div class="bg-slate-100 p-3 rounded-full text-slate-400"><i class="ph-fill ph-lock-key text-xl"></i></div>
+            </div>
+
+            <!-- Unit 3: Jihad (Locked) -->
+            <div class="bg-white/60 border-2 border-slate-100 rounded-2xl p-6 flex items-center justify-between cursor-not-allowed opacity-70">
+                <div class="flex items-center gap-5">
+                    <div class="bg-slate-100 text-slate-400 w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-2xl">3</div>
+                    <div>
+                        <h4 class="font-bold text-slate-600 text-xl">Jihad</h4>
+                        <p class="text-sm text-slate-400">Pengertian dan Konsep</p>
+                    </div>
+                </div>
+                <div class="bg-slate-100 p-3 rounded-full text-slate-400"><i class="ph-fill ph-lock-key text-xl"></i></div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-8 text-slate-400 text-sm font-semibold border-t border-rose-100 bg-white/50 mt-auto">
+        <p>Panitia Pendidikan Islam Tahun 6</p>
+    </footer>
+
+</body>
+</html>
+
