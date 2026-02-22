@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 1: Asas Hukum Syarak - Ibadah</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* CSS Utama untuk Halaman Pembelajaran */
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            background-color: #F8FAFC; /* Slate 50 */
+            color: #334155;
+            margin: 0;
+            padding: 0;
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* =========================================
+           CSS KHAS UNTUK PERMAINAN ANGKASA (GAME) 
+           ========================================= */
+        #game-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0f172a; /* Slate 900 - Dark Space */
+            color: white;
+            z-index: 9999;
+            display: none; /* Disembunyikan pada awalnya */
+            font-family: 'Press Start 2P', cursive;
+            touch-action: none;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle at bottom, #1e1b4b 0%, #020617 100%);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI Overlay Game */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .hud-text {
+            color: #38bdf8;
+            text-shadow: 2px 2px 0 #000;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        #question-display {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #f8fafc;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #38bdf8;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+
+        /* Kawalan Sentuh Game */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        .d-pad { display: flex; gap: 15px; }
+
+        .btn-game {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            user-select: none;
+            backdrop-filter: blur(5px);
+            transition: background 0.1s;
+        }
+
+        .btn-game:active {
+            background: rgba(56, 189, 248, 0.4);
+            border-color: #38bdf8;
+            transform: scale(0.95);
+        }
+
+        /* Skrin Menu Game */
+        .overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 100;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        .title-glow {
+            color: #fde047;
+            text-shadow: 0 0 10px #eab308, 0 0 20px #ca8a04;
+            margin-bottom: 20px;
+            font-size: 28px;
+            line-height: 1.5;
+        }
+
+        .btn-start {
+            background: #2563eb;
+            color: white;
+            border: 3px solid #60a5fa;
+            padding: 15px 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            margin-top: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transition: all 0.2s;
+        }
+        
+        .btn-start:hover { background: #1d4ed8; transform: scale(1.05); }
+
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #cbd5e1;
+            border: 2px solid #475569;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 200;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { background: rgba(30, 41, 59, 0.9); color: white; border-color: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col text-slate-700">
+
+    <!-- Header Pembelajaran Rasmi -->
+    <header id="main-header" class="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b-2 border-emerald-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='index.html'">
+                <img src="iconutama.png" alt="Logo" class="w-16 h-16 object-contain">
+                <div>
+                    <h1 class="font-extrabold text-2xl leading-tight text-slate-800">Pendidikan Islam <span class="text-emerald-600">Tahun 6</span></h1>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">E-Pembelajaran</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+                <i class="ph-fill ph-quotes text-emerald-600 text-xl"></i>
+                <span class="text-sm font-bold text-emerald-800">Bidang Ibadah</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- BAHAGIAN KANDUNGAN UTAMA (NOTA & VIDEO) -->
+    <main id="main-content" class="flex-grow max-w-4xl mx-auto px-6 py-10 w-full fade-in">
+
+        <!-- Butang Kembali -->
+        <button onclick="window.location.href='menu_ibadah.html'" class="mb-8 flex items-center gap-2 text-slate-500 hover:text-blue-600 font-bold transition-colors group">
+            <div class="bg-white p-2 rounded-full shadow-sm border border-slate-200 group-hover:border-blue-200 group-hover:bg-blue-50 transition-all">
+                <i class="ph-bold ph-arrow-left"></i>
+            </div>
+            Kembali ke menu unit Bidang Ibadah
+        </button>
+
+        <!-- Tajuk Unit -->
+        <div class="text-center mb-10">
+            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200 uppercase tracking-wider mb-2 inline-block">Unit 1</span>
+            <h2 class="text-4xl font-extrabold text-slate-800">Asas Hukum Syarak</h2>
+            <p class="text-slate-500 text-lg mt-2">Memahami 5 hukum asas dalam ibadah.</p>
+        </div>
+
+        <!-- BAHAGIAN 1: VIDEO PEMBELAJARAN -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-blue-100 inline-flex">
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <i class="ph-fill ph-video-camera text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-800">Video Pembelajaran</h2>
+            </div>
+            
+            <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl shadow-blue-100/50 border-4 border-white aspect-video relative flex items-center justify-center group">
+                <!-- Gunakan embed Youtube yang sebenar di sini. Ini adalah placeholder. -->
+                <iframe class="absolute inset-0 w-full h-full" src="5_hukum_dalam_islam.mp4" title="Video Pembelajaran Ibadah" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="text-center font-bold text-slate-500 mt-4 text-sm">Sila tonton video di atas untuk memahami maksud Wajib, Sunat, Harus, Makruh dan Haram.</p>
+        </section>
+
+        <!-- Divider -->
+        <div class="relative flex py-5 items-center mb-10">
+            <div class="flex-grow border-t border-slate-200"></div>
+            <span class="flex-shrink-0 mx-4 text-blue-400 text-2xl"><i class="ph-fill ph-rocket"></i></span>
+            <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <!-- BAHAGIAN 2: UJI MINDA (PERMAINAN ANGKASA) -->
+        <section class="mb-12">
+            <div class="flex items-center gap-3 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-purple-100 inline-flex">
+                <div class="bg-purple-100 p-2 rounded-lg text-purple-600">
+                    <i class="ph-fill ph-game-controller text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-800">Uji Minda</h2>
+            </div>
+
+            <!-- Kad Pelancar Permainan -->
+            <div class="bg-gradient-to-br from-slate-800 via-slate-900 to-indigo-950 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl relative overflow-hidden border border-slate-700">
+                <!-- Hiasan Latar Belakang Bintang -->
+                <div class="absolute top-4 left-10 text-white/10 text-4xl"><i class="ph-fill ph-star"></i></div>
+                <div class="absolute bottom-10 right-10 text-white/10 text-6xl"><i class="ph-fill ph-planet"></i></div>
+                
+                <div class="relative z-10">
+                    <div class="w-24 h-24 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-blue-400/50 shadow-[0_0_30px_rgba(56,189,248,0.3)]">
+                        <i class="ph-duotone ph-rocket text-5xl text-sky-400"></i>
+                    </div>
+                    
+                    <h3 class="text-3xl font-black text-white mb-2 tracking-tight">Misi Angkasa Ibadah</h3>
+                    <p class="text-sky-200 mb-8 max-w-md mx-auto text-lg">Uji kefahaman anda tentang Hukum Syarak. Pandu roket dan tembak jawapan yang tepat!</p>
+                    
+                    <button onclick="openGameView()" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-400 hover:to-sky-400 text-white font-bold py-4 px-10 rounded-full text-lg shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all transform hover:-translate-y-1">
+                        <i class="ph-fill ph-play-circle text-2xl"></i> MULA MISI SEKARANG
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="text-center py-8 text-slate-500 text-sm font-semibold border-t border-slate-200 mt-auto bg-white/90">
+        <p>Direka dengan ❤️ untuk Murid Tahun 6</p>
+    </footer>
+
+
+    <!-- =========================================
+         PAPARAN PERMAINAN ANGKASA (FULLSCREEN)
+         ========================================= -->
+    <div id="game-view">
+        <!-- Butang Keluar -->
+        <button onclick="closeGameView()" class="btn-back">
+            <i class="ph-bold ph-x"></i> Keluar
+        </button>
+
+        <div id="game-container">
+            <!-- Canvas Game -->
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- UI Score -->
+            <div class="ui-layer" id="ui-layer" style="display:none;">
+                <div class="hud-text">
+                    <p>MARKAH: <span id="score-display">0</span></p>
+                    <p>NYAWA: <span id="lives-display">❤️❤️❤️</span></p>
+                </div>
+                <div class="hud-text text-right">
+                    <p>TAHAP: <span id="level-display">1</span>/5</p>
+                </div>
+            </div>
+
+            <!-- Soalan Display -->
+            <div id="question-display">Soalan akan dipaparkan di sini...</div>
+
+            <!-- Controls (Mobile) -->
+            <div class="controls sm:hidden" id="mobile-controls" style="display:none;">
+                <div class="d-pad">
+                    <div class="btn-game" id="btn-left"><i class="ph-bold ph-arrow-left"></i></div>
+                    <div class="btn-game" id="btn-right"><i class="ph-bold ph-arrow-right"></i></div>
+                </div>
+                <div class="btn-game" id="btn-shoot" style="border-color: #f43f5e; color: #f43f5e;"><i class="ph-fill ph-crosshair"></i></div>
+            </div>
+
+            <!-- Skrin Mula Game -->
+            <div id="start-screen" class="overlay-screen">
+                <h1 class="title-glow">MISI<br>ANGKASA<br>IBADAH</h1>
+                <div class="text-sm text-slate-300 max-w-sm leading-relaxed px-6 font-sans bg-white/10 p-6 rounded-xl border border-white/20 backdrop-blur-sm">
+                    <p class="mb-3 font-bold text-white text-lg border-b border-white/20 pb-2">Arahan Misi:</p>
+                    <ul class="text-left space-y-2 list-disc pl-5">
+                        <li>Baca soalan di atas skrin.</li>
+                        <li>Gerakkan roket (Kiri/Kanan).</li>
+                        <li>Tembak meteor yang mengandungi jawapan yang <b>TEPAT</b>.</li>
+                        <li>Jangan biarkan nyawa anda habis!</li>
+                    </ul>
+                </div>
+                <button class="btn-start" onclick="startGame()">MULA ENJIN</button>
+            </div>
+
+            <!-- Skrin Tamat Game -->
+            <div id="game-over-screen" class="overlay-screen" style="display:none;">
+                <h1 class="title-glow" id="end-title">MISI TAMAT!</h1>
+                <p class="text-white font-sans text-xl mb-2" id="end-message">Tahniah, anda berjaya!</p>
+                <p class="text-sky-400 text-lg mb-8 font-sans font-bold">Markah Akhir: <span id="final-score">0</span></p>
+                <div class="flex gap-4">
+                    <button class="btn-start mt-0" style="background: #059669; border-color: #34d399;" onclick="restartGame()">MAIN LAGI</button>
+                    <button class="btn-start mt-0" style="background: #475569; border-color: #94a3b8;" onclick="closeGameView()">TUTUP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         SKRIP LOGIK PERMAINAN & UI
+         ========================================= -->
+    
+    <!-- Sistem Bunyi Sintetik -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'shoot') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'hit') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            }
+        }
+    </script>
+
+    <!-- Enjin Permainan -->
+    <script>
+        // Logik Buka/Tutup Game View
+        let gameLoopActive = false;
+
+        function openGameView() {
+            // Sembunyikan elemen latar
+            document.getElementById('main-header').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('main-footer').style.display = 'none';
+            
+            // Tunjuk paparan game
+            const gameView = document.getElementById('game-view');
+            gameView.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Halang scroll bila main game
+            
+            // Resized & Init Game
+            resize();
+            if(!gameLoopActive) {
+                initStars();
+                loop();
+                gameLoopActive = true;
+            }
+            
+            // Reset ke skrin mula game
+            document.getElementById('start-screen').style.display = 'flex';
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'none';
+            document.getElementById('question-display').style.display = 'none';
+            document.getElementById('mobile-controls').style.display = 'none';
+            state.isPlaying = false;
+        }
+
+        function closeGameView() {
+            state.isPlaying = false;
+            
+            // Sembunyikan paparan game
+            document.getElementById('game-view').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Benarkan scroll semula
+            
+            // Tunjuk elemen latar
+            document.getElementById('main-header').style.display = 'block';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('main-footer').style.display = 'block';
+            
+            // Tatal ke bahagian permainan
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        function restartGame() {
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'flex';
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let cw, ch;
+        function resize() {
+            cw = canvas.width = window.innerWidth;
+            ch = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+
+        // Data Permainan
+        const questions = [
+            { q: "Mendapat pahala jika buat, berdosa jika ditinggalkan.", options: ["Wajib", "Sunat", "Harus"], answer: "Wajib" },
+            { q: "Mendapat pahala jika buat, tidak berdosa jika ditinggalkan.", options: ["Sunat", "Wajib", "Haram"], answer: "Sunat" },
+            { q: "Tiada pahala dan tiada dosa jika dilakukan.", options: ["Harus", "Makruh", "Wajib"], answer: "Harus" },
+            { q: "Dibenci Allah. Pahala jika ditinggalkan, tiada dosa jika dibuat.", options: ["Makruh", "Haram", "Sunat"], answer: "Makruh" },
+            { q: "Berdosa jika dibuat, pahala jika ditinggalkan.", options: ["Haram", "Harus", "Makruh"], answer: "Haram" }
+        ];
+
+        let state = {
+            isPlaying: false,
+            score: 0,
+            lives: 3,
+            currentQ: 0,
+            waveActive: false
+        };
+
+        let keys = { left: false, right: false, space: false };
+        let stars = [];
+        let bullets = [];
+        let meteors = [];
+        let particles = [];
+
+        // Objek Pemain
+        const player = {
+            x: 0,
+            y: 0,
+            width: 40,
+            height: 50,
+            speed: 7,
+            cooldown: 0,
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                // Api Roket
+                ctx.fillStyle = Math.random() > 0.5 ? '#f97316' : '#fde047';
+                ctx.beginPath();
+                ctx.moveTo(-10, 20);
+                ctx.lineTo(10, 20);
+                ctx.lineTo(0, 20 + Math.random() * 20);
+                ctx.fill();
+
+                // Badan Roket
+                ctx.fillStyle = '#e2e8f0';
+                ctx.beginPath();
+                ctx.moveTo(0, -25);
+                ctx.lineTo(15, 10);
+                ctx.lineTo(-15, 10);
+                ctx.fill();
+
+                // Sayap
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.moveTo(15, 10);
+                ctx.lineTo(25, 25);
+                ctx.lineTo(10, 20);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-15, 10);
+                ctx.lineTo(-25, 25);
+                ctx.lineTo(-10, 20);
+                ctx.fill();
+
+                // Cermin
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(0, -5, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            },
+            update() {
+                if (keys.left) this.x -= this.speed;
+                if (keys.right) this.x += this.speed;
+
+                if (this.x < 20) this.x = 20;
+                if (this.x > cw - 20) this.x = cw - 20;
+
+                if (this.cooldown > 0) this.cooldown--;
+
+                if (keys.space && this.cooldown <= 0) {
+                    this.shoot();
+                }
+            },
+            shoot() {
+                bullets.push({ x: this.x, y: this.y - 30, radius: 4, speed: 10 });
+                this.cooldown = 15;
+                playSound('shoot');
+            }
+        };
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * cw,
+                    y: Math.random() * ch,
+                    radius: Math.random() * 1.5,
+                    speed: Math.random() * 2 + 0.5
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.fillStyle = 'white';
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (state.isPlaying || document.getElementById('game-view').style.display === 'block') {
+                    s.y += s.speed;
+                    if (s.y > ch) {
+                        s.y = 0;
+                        s.x = Math.random() * cw;
+                    }
+                }
+            });
+        }
+
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 1,
+                    color: color
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.05;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    ctx.globalAlpha = p.life;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+        }
+
+        function loadNextQuestion() {
+            if (state.currentQ >= questions.length) {
+                endGame(true);
+                return;
+            }
+
+            meteors = [];
+            bullets = [];
+            state.waveActive = true;
+            
+            const qData = questions[state.currentQ];
+            document.getElementById('question-display').innerText = qData.q;
+            document.getElementById('level-display').innerText = state.currentQ + 1;
+
+            const cols = 3;
+            const colWidth = cw / cols;
+            let shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+
+            for (let i = 0; i < 3; i++) {
+                let mx = (colWidth * i) + (colWidth / 2);
+                meteors.push({
+                    x: mx,
+                    y: -100 - (Math.random() * 100),
+                    radius: 40,
+                    text: shuffledOptions[i],
+                    isCorrect: shuffledOptions[i] === qData.answer,
+                    speed: 1.5 + (state.currentQ * 0.2)
+                });
+            }
+        }
+
+        function drawEntities() {
+            ctx.fillStyle = '#fde047';
+            bullets.forEach((b, index) => {
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+                b.y -= b.speed;
+                if (b.y < 0) bullets.splice(index, 1);
+            });
+
+            meteors.forEach((m, index) => {
+                ctx.fillStyle = '#475569';
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px Nunito';
+                if(cw > 600) ctx.font = 'bold 14px Nunito';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(m.text, m.x, m.y);
+
+                m.y += m.speed;
+
+                if (m.y > ch + 50) {
+                    m.y = -50; 
+                }
+            });
+        }
+
+        function checkCollisions() {
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                let b = bullets[i];
+                let hit = false;
+
+                for (let j = meteors.length - 1; j >= 0; j--) {
+                    let m = meteors[j];
+                    let dx = b.x - m.x;
+                    let dy = b.y - m.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < m.radius + b.radius) {
+                        hit = true;
+                        if (m.isCorrect) {
+                            playSound('correct');
+                            createExplosion(m.x, m.y, '#34d399');
+                            state.score += 100;
+                            updateHUD();
+                            state.currentQ++;
+                            state.waveActive = false;
+                            setTimeout(loadNextQuestion, 1500); 
+                        } else {
+                            playSound('hit');
+                            createExplosion(m.x, m.y, '#ef4444');
+                            state.lives--;
+                            updateHUD();
+                            if (state.lives <= 0) {
+                                endGame(false);
+                            }
+                        }
+                        meteors.splice(j, 1); 
+                        break;
+                    }
+                }
+                if (hit) bullets.splice(i, 1); 
+            }
+        }
+
+        function update() {
+            if (!state.isPlaying) return;
+            player.update();
+            checkCollisions();
+        }
+
+        function draw() {
+            if(document.getElementById('game-view').style.display === 'none') return;
+            
+            ctx.clearRect(0, 0, cw, ch);
+            drawStars();
+            
+            if (state.isPlaying) {
+                player.draw();
+                drawEntities();
+                updateParticles();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', e => {
+            if(!state.isPlaying) return;
+            if (e.code === 'ArrowLeft') keys.left = true;
+            if (e.code === 'ArrowRight') keys.right = true;
+            if (e.code === 'Space') keys.space = true;
+        });
+
+        window.addEventListener('keyup', e => {
+            if (e.code === 'ArrowLeft') keys.left = false;
+            if (e.code === 'ArrowRight') keys.right = false;
+            if (e.code === 'Space') keys.space = false;
+        });
+
+        // Touch Controls
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+        const btnShoot = document.getElementById('btn-shoot');
+
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const startEvt = isMobile ? 'touchstart' : 'mousedown';
+        const endEvt = isMobile ? 'touchend' : 'mouseup';
+
+        btnLeft.addEventListener(startEvt, (e) => { e.preventDefault(); keys.left = true; });
+        btnLeft.addEventListener(endEvt, (e) => { e.preventDefault(); keys.left = false; });
+        
+        btnRight.addEventListener(startEvt, (e) => { e.preventDefault(); keys.right = true; });
+        btnRight.addEventListener(endEvt, (e) => { e.preventDefault(); keys.right = false; });
+
+        btnShoot.addEventListener(startEvt, (e) => { e.preventDefault(); keys.space = true; });
+        btnShoot.addEventListener(endEvt, (e) => { e.preventDefault(); keys.space = false; });
+
+        function updateHUD() {
+            document.getElementById('score-display').innerText = state.score;
+            document.getElementById('lives-display').innerText = '❤️'.repeat(Math.max(0, state.lives));
+        }
+
+        function startGame() {
+            // Audio context perlukan interaksi user untuk 'resume'
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'flex';
+            document.getElementById('question-display').style.display = 'block';
+            document.getElementById('mobile-controls').style.display = 'flex';
+            
+            state.isPlaying = true;
+            state.score = 0;
+            state.lives = 3;
+            state.currentQ = 0;
+            updateHUD();
+            
+            player.x = cw / 2;
+            player.y = ch - (isMobile ? 180 : 80); 
+            
+            loadNextQuestion();
+        }
+
+        function endGame(isWin) {
+            state.isPlaying = false;
+            document.getElementById('ui-layer').style.display = 'none';
+            document.getElementById('question-display').style.display = 'none';
+            document.getElementById('mobile-controls').style.display = 'none';
+            
+            const screen = document.getElementById('game-over-screen');
+            screen.style.display = 'flex';
+            
+            document.getElementById('final-score').innerText = state.score;
+            
+            if (isWin) {
+                document.getElementById('end-title').innerText = "MISI SELESAI!";
+                document.getElementById('end-title').style.color = "#34d399";
+                document.getElementById('end-message').innerText = "Hebat! Anda menguasai Hukum Syarak.";
+            } else {
+                document.getElementById('end-title').innerText = "ROKET MUSNAH";
+                document.getElementById('end-title').style.color = "#f43f5e";
+                document.getElementById('end-message').innerText = "Nyawa anda telah habis. Cuba lagi!";
+            }
+        }
+
+    </script>
+</body>
+</html>
