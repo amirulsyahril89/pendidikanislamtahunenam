@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendidikan Islam Tahun 6 - Utama</title>
+    <title>BijakDeen - Pendidikan Islam Tahun 6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -21,21 +21,34 @@
 <body class="min-h-screen flex flex-col text-slate-700 selection:bg-pink-200 overflow-x-hidden">
 
     <!-- Header -->
-    <header class="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b-2 border-slate-100 shadow-sm">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        <header class="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-50 border-b-2 border-slate-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            
             <div class="flex items-center gap-4">
-                <img src="iconutama.png" alt="Logo" class="w-16 h-16 object-contain drop-shadow-md">
+                <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <i class="ph-bold ph-book-open text-white text-2xl"></i>
+                </div>
                 <div>
-                    <h1 class="font-extrabold text-2xl leading-tight text-slate-800">Pendidikan Islam <span class="text-indigo-600">Tahun 6</span></h1>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">E-Pembelajaran</p>
+                    <h1 class="font-extrabold text-2xl leading-tight text-slate-800">Bijak<span class="text-indigo-600">Deen</span></h1>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Pendidikan Islam • Tahun 6</p>
                 </div>
             </div>
-            <div class="hidden sm:flex items-center gap-2 bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100">
-                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span class="text-sm font-bold text-indigo-800">Sesi 2026</span>
+
+            <div class="hidden sm:flex bg-slate-100 p-1.5 rounded-full items-center gap-1 border border-slate-200">
+                <a href="https://bijakdeen4.vercel.app" class="px-5 py-2 rounded-full text-sm font-bold text-slate-500 hover:bg-slate-200 transition-colors">Tahun 4</a>
+                <a href="https://bijakdeen5.vercel.app" class="px-5 py-2 rounded-full text-sm font-bold text-slate-500 hover:bg-slate-200 transition-colors">Tahun 5</a>
+                <a href="#" class="px-5 py-2 rounded-full bg-white text-indigo-700 shadow-sm font-extrabold border border-slate-100">Tahun 6</a>
             </div>
+
+            <div class="sm:hidden w-full mt-2 flex justify-center gap-2">
+                 <a href="#" class="px-4 py-1.5 rounded-full bg-slate-100 text-xs font-bold text-slate-500">Thn 4</a>
+                 <a href="#" class="px-4 py-1.5 rounded-full bg-slate-100 text-xs font-bold text-slate-500">Thn 5</a>
+                 <a href="#" class="px-4 py-1.5 rounded-full bg-indigo-100 text-xs font-bold text-indigo-700 border border-indigo-200">Thn 6</a>
+            </div>
+
         </div>
     </header>
+
 
     <main class="flex-grow max-w-6xl mx-auto px-6 py-10 w-full fade-in">
         <div class="text-center mb-10">
@@ -131,7 +144,7 @@
     </main>
     
     <footer class="text-center py-8 text-slate-400 text-sm font-semibold bg-white/50 border-t border-slate-200 mt-auto">
-        <p>Pendidikan Islam Tahun 6 – Sumber e-pembelajaran untuk pelajar dan pendidik.</p>
+        <p>&copy; 2026 BijakDeen - Laman Pendidikan Islam Gen Alpha</p>
     </footer>
 
     <!-- Toast Notification -->
